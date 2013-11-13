@@ -10,6 +10,8 @@ import Control.Monad.Trans.Reader
 import Test.QuickCheck
 
 
+-- | @Shrink r a@ is a computation that shrinks @a@ as a component of
+-- a larger type @r@ (typically a record).
 newtype Shrink r a = Shrink (ReaderT r [] a)
     deriving (Functor, Applicative, Alternative, Monad, MonadPlus)
 
