@@ -1,7 +1,8 @@
 module Test.QuickCheck.Shrink where
 
 import Control.Applicative
-import Control.Monad
+
+--import Control.Comonad
 
 import Test.QuickCheck
 
@@ -26,3 +27,11 @@ instance Applicative Shrink where
     pure = Shrink []
     Shrink fs f <*> Shrink xs x =
         Shrink (map ($ x) fs ++ map f xs) (f x)
+
+{-
+-- This is commented out to avoid a dependency on the comonad package
+
+instance Comonad Shrink where
+    extract (Shrink _ x) = x
+    duplicate s@(Shrink xs _) = Shrink (map (Shrink xs) xs) s
+-}
