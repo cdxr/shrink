@@ -73,17 +73,18 @@ whole is no shrinks.
 
 #### the solution
 
-The `Test.QuickCheck.Shrink` module provides the type `Shrink a`,
+The `Test.Shrink` module provides the type `Shrink a`,
 representing a value of `a` and its possible shrinks. The desired
 functionality is provided by just two functions:
 
 ```haskell
-shrinks :: (Arbitrary a) => Shrink a
+-- like `shrink`, but returns `Shrink a` instead of `[a]`.
+shrinks :: (Arbitrary a) => a -> Shrink a
 
 runShrink :: Shrink a -> [a]
 ```
 
-We can write our definition as
+We can write the desired definition as:
 
 ```haskell
     shrink (T x y a) = runShrink $ T <$> shrinks x <*> shrinks y <*> shrinks a

@@ -1,4 +1,4 @@
-module Test.QuickCheck.Shrink where
+module Test.Shrink where
 
 import Control.Applicative
 
