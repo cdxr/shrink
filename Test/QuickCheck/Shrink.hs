@@ -13,11 +13,11 @@ data Shrink a = Shrink [a] a
 runShrink :: Shrink a -> [a]
 runShrink (Shrink xs _) = xs
 
-shrinks :: (a -> [a]) -> a -> Shrink a
-shrinks f x = Shrink (f x) x
+shrinksWith :: (a -> [a]) -> a -> Shrink a
+shrinksWith f x = Shrink (f x) x
 
-shrink' :: (Arbitrary a) => a -> Shrink a
-shrink' = shrinks shrink
+shrinks :: (Arbitrary a) => a -> Shrink a
+shrinks = shrinksWith shrink
 
 
 instance Functor Shrink where
