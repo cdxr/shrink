@@ -7,17 +7,24 @@ import Control.Applicative
 import Test.QuickCheck
 
 
+-- | A @Shrink a@ is a value of @a@ with a list of potential shrinks of
+-- that value.
 data Shrink a = Shrink [a] a
     deriving (Show, Eq, Ord)
 
+-- | Extract the possible shrinks from a @Shrink a@.
 runShrink :: Shrink a -> [a]
 runShrink (Shrink xs _) = xs
 
-shrinksWith :: (a -> [a]) -> a -> Shrink a
-shrinksWith f x = Shrink (f x) x
-
+-- | `shrinks` is similar to `shrink`, but returns a `Shrink` instead of a
+-- list.
 shrinks :: (Arbitrary a) => a -> Shrink a
 shrinks = shrinksWith shrink
+
+-- | @shrinksWith f@ is like `shrinks` but uses the custom function @f@ to
+-- perform the shrink.
+shrinksWith :: (a -> [a]) -> a -> Shrink a
+shrinksWith f x = Shrink (f x) x
 
 
 instance Functor Shrink where

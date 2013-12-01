@@ -84,7 +84,7 @@ shrinks :: (Arbitrary a) => a -> Shrink a
 runShrink :: Shrink a -> [a]
 ```
 
-We can write the desired definition as:
+We can write the definition as:
 
 ```haskell
     shrink (T x y a) = runShrink $ T <$> shrinks x <*> shrinks y <*> shrinks a
