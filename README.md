@@ -42,7 +42,7 @@ should take a value and provide a list of "shrinks", values that are
 (in some subjective sense) smaller than that value. If the
 argument to `shrink` cannot be made smaller, the result is an empty list.
 
-We know that a `T a` is made up an `Int`, another `Int`, and an `a`, all
+We know that a `T a` is made up of an `Int`, another `Int`, and an `a`, all
 of which have defined `shrink`. A definition with the desired semantics
 follows:
 
@@ -52,10 +52,10 @@ follows:
                     ++ [ T x y a' | a' <- shrink a ]
 ```
 
-Shrinking a `T` results in all the ways that you can shrink one component
-of the `T` combined with the original other components. Note how verbose
-this definition is. It would be nice if there was a simple, brief, and
-composable way to express the same thing.
+To shrink a `T a`, you take every shrink of each component and combine it with
+every other original component. Note how verbose this definition is.
+It would be nice if there was a shorter, simpler, and more composable way to
+express the same thing.
 
 At first glance it might seem that you can use the applicative instance
 for `[]` to achieve this. Then the definition would be:
