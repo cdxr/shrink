@@ -9,36 +9,42 @@ composable shrink functions for
 
 Consider the case of writing an
 [Arbitrary](http://hackage.haskell.org/package/QuickCheck/docs/Test-QuickCheck-Arbitrary.html)
-instance for a new type.
-
-Suppose the definition is:
-
-```haskell
-data T a = T Int Int a
-```
-We want to define an `Arbitrary` instance for `T`.
+instance.
 
 ```haskell
 class Arbitrary a where
     arbitrary :: Gen a
     shrink :: a -> [a]
+```
 
-The definition of arbitrary is straightforward, because we can compose
-the existing definitions for `Int` and `a`.
+We will use the following type as an example:
+
+```haskell
+data T a = T Int Int a
+```
+
+We would like to define an `Arbitrary` instance for `T a`. The value
+of `arbitrary` is a `Gen (T a)`. This can be defined in a clear and
+composable manner because `Gen` is an instance of `Applicative`.
 
 ```haskell
 instance (Arbitrary a) => Arbitrary (T a) where
     arbitrary (T x y a) = T <$> arbitrary <*> arbitrary <*> arbitrary
 ```
 
-The above code utilizes the `Applicative` instance of `Gen`.
 Using the idiomatic combinators `<$>` and `<*>` we easily map the `T`
 constructor over a `Gen Int`, another `Gen Int`, and a `Gen a`.
 The result, of type `Gen (T a)`, is composable and can be used to define
 `arbitrary` for types that contain a `T a`.
 
-Now lets consider the definition of `shrink`. A definition with the
-desired semantics follows:
+Now lets consider the definition of `shrink`. The function `shrink`
+should take a value and provide a list of "shrinks", values that are
+(in some subjective sense) smaller than that value. If the
+argument to `shrink` cannot be made smaller, the result is an empty list.
+
+We know that a `T a` is made up an `Int`, another `Int`, and an `a`, all
+of which have defined `shrink`. A definition with the desired semantics
+follows:
 
 ```haskell
     shrink (T x y a) = [ T x' y a | x' <- shrink x ]
@@ -52,9 +58,10 @@ this definition is. It would be nice if there was a simple, brief, and
 composable way to express the same thing.
 
 At first glance it might seem that you can use the applicative instance
-for lists to achieve this. Then the definition would be:
+for `[]` to achieve this. Then the definition would be:
 
 ```haskell
+    -- this is wrong
     shrink (T x y a) = T <$> shrink x <*> shrink y <*> shrink a
 ```
 
